@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 //Next.jsのフレームワークで使用される型で、Reactコンポーネントを表す型として定義されています。
 import { NextPage } from 'next'
 //GetStaticPropsの型インポート
@@ -12,7 +14,7 @@ import { Task, Notice } from '../types/types'
 // ssgと実装は同じ
 // revalidate: 5 のみ違い
 export const getStaticProps: GetStaticProps = async () => {
-  console.log('getStaticProps/ssg invoked')
+  console.log('getStaticProps/isr invoked')
   // supabaseからデータ取得例
   // {
   //   data: [
@@ -53,8 +55,9 @@ type StaticProps = {
 }
 
 const Isr: NextPage<StaticProps> = ({ tasks, notices }) => {
+  const router = useRouter()
   return (
-    <Layout title="SSG">
+    <Layout title="ISR">
       <p className="mb-3 text-indigo-500">ISR</p>
       <ul className="mb-3">
         {/* JavaScriptのアロー関数式では、ブロックを使用した複数行の関数本体を定義する場合、明示的にreturn文を使用して値を返す必要があります。 */}
@@ -76,6 +79,12 @@ const Isr: NextPage<StaticProps> = ({ tasks, notices }) => {
           )
         })}
       </ul>
+      <Link href="/ssr" prefetch={false} className="mb-3 text-xs">
+        Link to ssr
+      </Link>
+      <button className="mb-3 text-xs" onClick={() => router.push('/ssr')}>
+        Route to ssr
+      </button>
     </Layout>
   )
 }

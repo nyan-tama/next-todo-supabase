@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 //Next.jsのフレームワークで使用される型で、Reactコンポーネントを表す型として定義されています。
 import { NextPage } from 'next'
 //GetStaticPropsの型インポート
@@ -11,6 +9,8 @@ import { supabase } from '../utils/supabase'
 // 型インポート
 import { Task, Notice } from '../types/types'
 
+// ssgと実装は同じ
+// revalidate: 5 のみ違い
 export const getStaticProps: GetStaticProps = async () => {
   console.log('getStaticProps/ssg invoked')
   // supabaseからデータ取得例
@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps = async () => {
     .select('*')
     .order('created_at', { ascending: true })
   // JavaScriptのオブジェクトリテラルの構文では、プロパティ名とプロパティ値をコロン(:)で区切り、プロパティとプロパティの間はカンマ(,)で区切ります。
-  return { props: { tasks, notices } }
+  return { props: { tasks, notices }, revalidate: 5 }
 }
 
 type StaticProps = {
@@ -52,11 +52,10 @@ type StaticProps = {
   // }
 }
 
-const Ssg: NextPage<StaticProps> = ({ tasks, notices }) => {
-  const router = useRouter()
+const Isr: NextPage<StaticProps> = ({ tasks, notices }) => {
   return (
     <Layout title="SSG">
-      <p className="mb-3 text-blue-500">SSG</p>
+      <p className="mb-3 text-indigo-500">ISR</p>
       <ul className="mb-3">
         {/* JavaScriptのアロー関数式では、ブロックを使用した複数行の関数本体を定義する場合、明示的にreturn文を使用して値を返す必要があります。 */}
         {/* この場合｛}にすること、returnを省略することで()表記もできる */}
@@ -77,14 +76,8 @@ const Ssg: NextPage<StaticProps> = ({ tasks, notices }) => {
           )
         })}
       </ul>
-      <Link href="/ssr" prefetch={false}>
-        <a className="my-3 text-xs">Link to ssr</a>
-      </Link>
-      <button className="mb-3 text-xs" onClick={() => router.push('/ssr')}>
-        Router to ssr
-      </button>
     </Layout>
   )
 }
 
-export default Ssg
+export default Isr

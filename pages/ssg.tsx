@@ -1,28 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-//Next.jsのフレームワークで使用される型で、Reactコンポーネントを表す型として定義されています。
 import { NextPage } from 'next'
-//GetStaticPropsの型インポート
 import { GetStaticProps } from 'next'
-// レイアウト定義
 import { Layout } from '../components/Layout'
-//API設定
-import { supabase } from '../utils/supabase'
-// 型インポート
+import { supabase } from '@/utils/supabase'
 import { Task, Notice } from '../types/types'
 
 export const getStaticProps: GetStaticProps = async () => {
   console.log('getStaticProps/ssg invoked')
-  // supabaseからデータ取得例
-  // {
-  //   data: [
-  //     { ... }, // レコード1
-  //     { ... }, // レコード2
-  //     { ... }, // レコード3
-  //     // ...
-  //   ]
-  // }
-  // 分割代入 型ではない　通常は型のプロパティ名として、キャメルケースで記述することが推奨されています。
   const { data: tasks } = await supabase
     .from('todos')
     .select('*')
@@ -31,25 +16,11 @@ export const getStaticProps: GetStaticProps = async () => {
     .from('notices')
     .select('*')
     .order('created_at', { ascending: true })
-  // JavaScriptのオブジェクトリテラルの構文では、プロパティ名とプロパティ値をコロン(:)で区切り、プロパティとプロパティの間はカンマ(,)で区切ります。
   return { props: { tasks, notices } }
 }
-
 type StaticProps = {
   tasks: Task[]
-  // ex Task = {
-  //    id: string
-  //    created_at: string
-  //    title: string
-  //    user_id: string | undefined
-  // }
   notices: Notice[]
-  // ex  Notice = {
-  //      id: string
-  //      created_at: string
-  //      content: string
-  //      user_id: string | undefined
-  // }
 }
 
 const Ssg: NextPage<StaticProps> = ({ tasks, notices }) => {
@@ -58,12 +29,10 @@ const Ssg: NextPage<StaticProps> = ({ tasks, notices }) => {
     <Layout title="SSG">
       <p className="mb-3 text-blue-500">SSG</p>
       <ul className="mb-3">
-        {/* JavaScriptのアロー関数式では、ブロックを使用した複数行の関数本体を定義する場合、明示的にreturn文を使用して値を返す必要があります。 */}
-        {/* この場合｛}にすること、returnを省略することで()表記もできる */}
         {tasks.map((task) => {
           return (
             <li key={task.id}>
-              <p className="text-lg font-extrabold">{task.title}</p>
+              <p className="text-extrabold text-lg">{task.title}</p>
             </li>
           )
         })}
@@ -72,16 +41,17 @@ const Ssg: NextPage<StaticProps> = ({ tasks, notices }) => {
         {notices.map((notice) => {
           return (
             <li key={notice.id}>
-              <p className="text-lg font-extrabold">{notice.content}</p>
+              <p className="text-extrabold text-lg">{notice.content}</p>
             </li>
           )
         })}
       </ul>
-      <Link href="/ssr" prefetch={false}>
-        <a className="my-3 text-xs">Link to ssr</a>
+      {/* エラーが出た時、Link内に<a></a>があったため */}
+      <Link href="/ssr" prefetch={false} className="mb-3 text-xs">
+        Link to ssr
       </Link>
       <button className="mb-3 text-xs" onClick={() => router.push('/ssr')}>
-        Router to ssr
+        Route to ssr
       </button>
     </Layout>
   )

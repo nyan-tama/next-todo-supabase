@@ -42,9 +42,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const { push, pathname } = useRouter()
   const validateSession = () => {
     const userData = supabase.auth.getUser()
-    //Promiseの返却を受け、dataを分割代入でうける、ほかにはerrorも受けれるがとりあえずいらない
-    userData.then(({ data: user }) => {
-      // console.log(user)
+    //Promiseの返却を受け、dataを分割代入でうける、さらに、dataのプロパティuserをうける。　data以外にerrorも受けれるがとりあえずいらない
+    userData.then(({ data: { user } }) => {
+      console.log(user)
       if (user && pathname === '/') {
         push('/dashboard')
         // userログインしていなく、ルート以外にいるならログイン画面へ

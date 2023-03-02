@@ -10,6 +10,17 @@ import { useMutateAuth } from '../hooks/useMutateAuth'
 const inter = Inter({ subsets: ['latin'] })
 
 const Auth: NextPage = () => {
+  const user1 = {
+    name: 'user1',
+    message: 'hello',
+  }
+  const user2 = {
+    name: 'user2',
+    message: 'bye',
+  }
+  const sampleFunc ({message}) => console.log(message);
+  sampleFunc(user1);
+  sampleFunc(user2);
   // ログイン中か、ログイン前なのかを管理
   const [isLogin, setIsLogin] = useState(true)
   const {
